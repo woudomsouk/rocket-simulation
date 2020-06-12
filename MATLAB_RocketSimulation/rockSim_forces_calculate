@@ -1,0 +1,44 @@
+function [Fx,Fy] = calculateforce(Distance,launchRodLength,Mass,Theta,launchAngle,Cd_R,airDensity,Acs,resultantVelocity,Thrust,t)
+
+    % Constants
+    g = 9.81;
+
+    % Parachute Shit
+    t_drogue = 27.25;
+    t_main = 100;
+    Cd_drogue = 0.75;
+    Cd_main = 2.59;
+    A_drogue = 0.466 ;		% Area here
+    A_main = 1;			% Area here
+
+    % Normal Force
+    if Distance <= launchRodLength
+        Normal = Mass*g*cosd(launchAngle);
+    else
+    % Normal(n) = 0.5*Cn(n)*Rho*A*(Vx(n-1)^2+Vy(n-1)^2);
+        Normal = 0;
+    end
+    
+    if t < t_drogue
+	coefficient_ofDrag = Cd_R;
+        respective_Area = Acs;
+    
+    elseif t >= t_drogue && t< t_main
+	coefficient_ofDrag = Cd_drogue;
+        respective_Area = A_drogue;
+    
+    elseif t >= t_main
+	coefficient_ofDrag = Cd_main;
+        respective_Area = A_main;
+    
+    end
+	
+
+    % Drag Force
+    Drag= 0.5*coefficient_ofDrag*airDensity*respective_Area*(resultantVelocity^2);
+    
+    % Sum of Forces
+    Fx = Thrust*cosd(Theta)-Drag*cosd(Theta)...
+        -Normal*sind(Theta);                            
+    Fy = Thrust*sind(Theta)-(Mass*g)-...
+        Drag*sind(Theta)+Normal*cosd(Theta);
