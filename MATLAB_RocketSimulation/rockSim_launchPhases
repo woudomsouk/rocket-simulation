@@ -1,0 +1,18 @@
+function [Thrust,Mass,fuelBurned] = launchphases(motorSpecs,motorSelection,totalMass,t)
+% The different phases the rocket will go through during flight, from
+% initial launch, to apogee, and recovery.
+
+% Burn Phase
+    if t <= motorSpecs(motorSelection,2)
+        Thrust = motorSpecs(motorSelection,1)/motorSpecs(motorSelection,2);
+        fuelBurned = motorSpecs(motorSelection,4)*t/motorSpecs(motorSelection,2); 
+
+% Coast Phase
+    elseif t >= motorSpecs(motorSelection,2)                        
+        Thrust = 0;
+        fuelBurned = motorSpecs(motorSelection,4);
+    end
+
+        Mass = totalMass - fuelBurned;    
+        
+end
